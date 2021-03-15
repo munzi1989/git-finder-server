@@ -6,7 +6,7 @@ const { check, validationResult } = require('express-validator');
 const config = require('config');
 const jwt = require('jsonwebtoken');
 
-// @route   POST    /users
+// @route   POST    api/users
 // @description Register user to DB
 // @access  public
 router.post(
@@ -47,11 +47,29 @@ router.post(
           user.password = await bcrypt.hash(password, salt);
           // save to DB
           await user.save();
-          console.log('SUCCESS! User Saved to DB');
-          
-        //   !!!!!!!!!!
+          console.log('SUCCESS! User registered to DB');
+        //   after registering user, send user data back to client to use
           // sign json token below before sending user data back to client
-          res.send(req.body) 
+          const payload = {
+            user: {
+                // user.id === string version of mongoDB _id
+                id: user.id
+            }
+          };
+
+        //   sign token, send back to use in header for auth
+          jwt.sign(
+              payload,
+              config.get('jwtSecret'),
+              {
+                  expiresIn: 360000
+              },
+              (err, token) => {
+                  if(err) throw err;
+                //   return token
+                  res.json({token})
+              }
+          );
         }
       } catch (err) {
         console.error(err.message);
