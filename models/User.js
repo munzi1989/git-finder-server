@@ -14,6 +14,10 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  favorites: {
+    type: Array,
+    
+  },
   date: {
     //   date created
     type: Date,

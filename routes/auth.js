@@ -60,7 +60,6 @@ router.post(
         },
       };
 
-      
       // sign jwt
       jwt.sign(
         payload,

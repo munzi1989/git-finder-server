@@ -34,7 +34,9 @@ router.post(
         // check if email exists already
         let user = await User.findOne({ email });
         if (user) {
-          return res.status(400).json({ msg: 'User aready exists' });
+          console.log('User already exists')
+          return res.status(400).json({ msg: 'User already exists' });
+          
         } else {
           user = new User({
             name,
@@ -53,7 +55,8 @@ router.post(
           const payload = {
             user: {
                 // user.id === string version of mongoDB _id
-                id: user.id
+                id: user.id,
+                name: user.name
             }
           };
 
