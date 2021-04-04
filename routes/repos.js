@@ -4,7 +4,7 @@ const { check, validationResult } = require('express-validator');
 const auth = require('../middleware/auth');
 // const User = require('../models/User');
 const Repo = require('../models/Repos');
-const { find } = require('../models/Repos');
+
 
 const router = express.Router();
 
@@ -45,10 +45,7 @@ router.post(
     try {
       const { url, owner } = req.body;
       console.log(req.body);
-      const match = Repo.find({url: url, owner: owner})
-      if(match === req.body){
-        throw new Error('Already saved to repos')
-      }
+      
       const newRepo = new Repo({
         owner,
         url,
@@ -56,8 +53,8 @@ router.post(
       });
 
       const repo = await newRepo.save();
-      res.status(200).send('Success').json(newRepo)
-      console.log(`Repo ${repo} added to database`);
+      res.status(200).send(`Success, added ${newRepo} to database`);
+      console.log(`Repo ${newRepo} added to database`);
     } catch (err) {
       console.error(err.message);
       res.status(500).send('Server Error');
@@ -66,15 +63,22 @@ router.post(
 );
 
 
-router.delete('/', (req,res) => {
-
+router.delete('/:id', auth,  async (req,res) => {
   try {
-    
+    let repo = await Repo.findById(req.params.id);
+    if (!repo) return res.status(404).json('Repo not found');
+    if (repo.user.toString() !== req.user.id) {
+      return res.status(401).json({ msg: 'Not authorized' });
+    }
+
+    await Repo.findByIdAndRemove(req.params.id);
+    res.json({ msg: 'Contact removed' });
+ 
+    console.log('Successfully deleted');
   } catch (err) {
     console.error(err);
-    res.status(500).send('Server Error')
+    res.status(500).send('Server Error');
   }
-
 })
 
 module.exports = router;

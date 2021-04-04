@@ -1,23 +1,21 @@
 const mongoose = require('mongoose');
 
-const RepoSchema = mongoose.Schema({
+const ReposSchema = mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
-    required: true
-  },
-  url: {
-    type: String,
-    required: true
   },
   owner: {
     type: String,
-    required: true
   },
-  date: {
+  url: {
+    type: String,
+  },
+   date: {
+    //   date created
     type: Date,
     default: Date.now,
   },
 });
 
-module.exports = mongoose.model('repo', RepoSchema);
+module.exports = mongoose.model('repos', ReposSchema);
