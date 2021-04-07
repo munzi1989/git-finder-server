@@ -5,7 +5,6 @@ const auth = require('../middleware/auth');
 // const User = require('../models/User');
 const Repo = require('../models/Repos');
 
-
 const router = express.Router();
 
 // @route   GET    api/repos
@@ -45,7 +44,7 @@ router.post(
     try {
       const { url, owner } = req.body;
       console.log(req.body);
-      
+
       const newRepo = new Repo({
         owner,
         url,
@@ -62,8 +61,7 @@ router.post(
   }
 );
 
-
-router.delete('/:id', auth,  async (req,res) => {
+router.delete('/:id', auth, async (req, res) => {
   try {
     let repo = await Repo.findById(req.params.id);
     if (!repo) return res.status(404).json('Repo not found');
@@ -73,12 +71,12 @@ router.delete('/:id', auth,  async (req,res) => {
 
     await Repo.findByIdAndRemove(req.params.id);
     res.json({ msg: 'Contact removed' });
- 
+
     console.log('Successfully deleted');
   } catch (err) {
     console.error(err);
     res.status(500).send('Server Error');
   }
-})
+});
 
 module.exports = router;

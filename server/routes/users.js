@@ -34,9 +34,8 @@ router.post(
         // check if email exists already
         let user = await User.findOne({ email });
         if (user) {
-          console.log('User already exists')
+          console.log('User already exists');
           return res.status(400).json({ msg: 'User already exists' });
-          
         } else {
           user = new User({
             name,
@@ -50,28 +49,28 @@ router.post(
           // save to DB
           await user.save();
           console.log('SUCCESS! User registered to DB');
-        //   after registering user, send user data back to client to use
+          //   after registering user, send user data back to client to use
           // sign json token below before sending user data back to client
           const payload = {
             user: {
-                // user.id === string version of mongoDB _id
-                id: user.id,
-                name: user.name
-            }
+              // user.id === string version of mongoDB _id
+              id: user.id,
+              name: user.name,
+            },
           };
 
-        //   sign token, send back to use in header for auth
+          //   sign token, send back to use in header for auth
           jwt.sign(
-              payload,
-              config.get('jwtSecret'),
-              {
-                  expiresIn: 360000
-              },
-              (err, token) => {
-                  if(err) throw err;
-                //   return token
-                  res.json({token})
-              }
+            payload,
+            config.get('jwtSecret'),
+            {
+              expiresIn: 360000,
+            },
+            (err, token) => {
+              if (err) throw err;
+              //   return token
+              res.json({ token });
+            }
           );
         }
       } catch (err) {
