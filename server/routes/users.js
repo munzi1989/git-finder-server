@@ -37,19 +37,21 @@ router.post(
           console.log('User already exists');
           return res.status(400).json({ msg: 'User already exists' });
         } else {
+          // create new instance of user req.body data
           user = new User({
             name,
             email,
             password,
           });
-          // generate salt for password
+          // generate salt for password x10
           const salt = await bcrypt.genSalt(10);
           // hash password w/ salt
           user.password = await bcrypt.hash(password, salt);
           // save to DB
           await user.save();
           console.log('SUCCESS! User registered to DB');
-          //   after registering user, send user data back to client to use
+          //   after registering user, send user data back to client to use data
+
           // sign json token below before sending user data back to client
           const payload = {
             user: {
@@ -59,7 +61,7 @@ router.post(
             },
           };
 
-          //   sign token, send back to use in header for auth
+          //   sign token, send back as cookie to use in auth middleware
           jwt.sign(
             payload,
             config.get('jwtSecret'),
@@ -68,7 +70,8 @@ router.post(
             },
             (err, token) => {
               if (err) throw err;
-              //   return token
+              //   return token as cookie for security
+              res.cookie('token', token, { httpOnly: true});
               res.json({ token });
             }
           );
