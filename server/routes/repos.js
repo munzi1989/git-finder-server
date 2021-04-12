@@ -43,12 +43,13 @@ router.post(
     }
 
     try {
-      const { url, owner } = req.body;
+      const { url, owner, notes } = req.body;
       console.log(req.body.data);
       // create new instance of Repo model w/ req.body data
       const newRepo = new Repo({
         owner,
         url,
+        notes,
         user: req.user.id,
       });
       // save to DB
@@ -71,9 +72,8 @@ router.delete('/:id', auth, async (req, res) => {
     if (repo.user.toString() !== req.user.id) {
       return res.status(401).json({ msg: 'Not authorized' });
     }
-
     await Repo.findByIdAndRemove(req.params.id);
-    res.json({ msg: 'Contact removed' });
+    res.json({ msg: 'Repo removed' });
     console.log('Successfully deleted');
   } catch (err) {
     console.error(`The following ERROR occurred: ${err}`);

@@ -11,7 +11,10 @@ const ReposSchema = mongoose.Schema({
   url: {
     type: String,
   },
-   date: {
+  notes: {
+    type: String,
+  },
+  date: {
     //   date created
     type: Date,
     default: Date.now,
