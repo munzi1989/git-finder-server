@@ -34,41 +34,46 @@ router.post(
         // check if email exists already
         let user = await User.findOne({ email });
         if (user) {
-          return res.status(400).json({ msg: 'User aready exists' });
+          console.log('User already exists');
+          return res.status(400).json({ msg: 'User already exists' });
         } else {
+          // create new instance of user req.body data
           user = new User({
             name,
             email,
             password,
           });
-          // generate salt for password
+          // generate salt for password x10
           const salt = await bcrypt.genSalt(10);
           // hash password w/ salt
           user.password = await bcrypt.hash(password, salt);
           // save to DB
           await user.save();
           console.log('SUCCESS! User registered to DB');
-        //   after registering user, send user data back to client to use
+          //   after registering user, send user data back to client to use data
+
           // sign json token below before sending user data back to client
           const payload = {
             user: {
-                // user.id === string version of mongoDB _id
-                id: user.id
-            }
+              // user.id === string version of mongoDB _id
+              id: user.id,
+              name: user.name,
+            },
           };
 
-        //   sign token, send back to use in header for auth
+          //   sign token, send back as cookie to use in auth middleware
           jwt.sign(
-              payload,
-              config.get('jwtSecret'),
-              {
-                  expiresIn: 360000
-              },
-              (err, token) => {
-                  if(err) throw err;
-                //   return token
-                  res.json({token})
-              }
+            payload,
+            config.get('jwtSecret'),
+            {
+              expiresIn: 360000,
+            },
+            (err, token) => {
+              if (err) throw err;
+              //   return token as cookie for security
+              res.cookie('token', token, { httpOnly: true});
+              res.json({ token });
+            }
           );
         }
       } catch (err) {

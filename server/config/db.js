@@ -15,7 +15,7 @@ const connectDB = async () => {
     });
     console.log('SUCCESS! Mongoose connected to MongoDB!');
   } catch (err) {
-    console.error(err.message);
+    console.error(`The following ERROR occurred: ${err}`);
     // exit on failure
     process.exit(1);
   }

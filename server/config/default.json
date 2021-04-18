@@ -1,4 +1,4 @@
 {
   "mongoURI": "mongodb+srv://munzi89:drpepper@cluster0.vpac1.mongodb.net/git-finder?retryWrites=true&w=majority",
-  "jwtSecret": "secret"
+  "jwtSecret": "123abcXYZ10102020"
 }
