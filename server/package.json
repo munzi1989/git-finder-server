@@ -11,7 +11,7 @@
     "mongoose": "^5.12.0"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "export HTTPS=true&&SSL_CRT_FILE=cert.pem&&SSL_KEY_FILE=key.pem node server.js",
     "server": "nodemon server.js",
     "client": "npm start --prefix ../client/",
     "dev": "concurrently \"npm run server\" \"npm run client\""
