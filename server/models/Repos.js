@@ -10,9 +10,11 @@ const ReposSchema = mongoose.Schema({
   },
   url: {
     type: String,
+    unique: true,
   },
   notes: {
     type: String,
+    default: ' NO NOTES SAVED',
   },
   date: {
     //   date created

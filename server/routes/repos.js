@@ -3,6 +3,7 @@ const config = require('config');
 const { check, validationResult } = require('express-validator');
 const auth = require('../middleware/auth');
 const Repo = require('../models/Repos');
+const { findOneAndUpdate } = require('../models/Repos');
 const router = express.Router();
 
 // @route   GET    api/repos
@@ -63,6 +64,9 @@ router.post(
   }
 );
 
+// @route DELETE   api/repos
+// desc   DELETE SAVED REPO
+// access PRIVATE
 router.delete('/:id', auth, async (req, res) => {
   try {
     // find repo by URL params == the ID
@@ -78,6 +82,22 @@ router.delete('/:id', auth, async (req, res) => {
   } catch (err) {
     console.error(`The following ERROR occurred: ${err}`);
     res.status(500).send('Server Error');
+  }
+});
+
+router.put('/', auth, async (req, res) => {
+  const { id, notes } = req.body;
+  try {
+    let doc = await Repo.findById(id);
+    if (doc) {
+      console.log('Original: ' + doc);
+      doc.notes = notes;
+      console.log('UPDATED NOTES: ' + doc);
+      doc.save();
+      res.status(200).send('Repo updated');
+    }
+  } catch (err) {
+    console.error(err);
   }
 });
 

@@ -61,18 +61,18 @@ router.post(
         },
       };
 
-      // sign jwt with data = user id and secret, set to expire in a few hours
+      // sign jwt with data = user id and secret, set to expire in a day
       jwt.sign(
         payload,
         config.get('jwtSecret'),
         {
-          expiresIn: 9000000,
+          expiresIn: 86400000,
         },
         (err, token) => {
           if (err) throw err;
           // set token in cookies to be used in http requests only, cant be read w/ js == more secure
           res.cookie('token', token, {
-            expires: new Date(Date.now() + 900000),
+            expires: new Date(Date.now() + 86400000),
             httpOnly: true,
           });
           res.json({ token });
